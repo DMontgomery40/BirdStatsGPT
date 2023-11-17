@@ -1,0 +1,169 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BirdNetAI API",
+        "description": "API for BirdNetAI, a bird sound recognition software",
+        "version": "1.0.0"
+      },
+    "servers": [
+        {
+          "url": "https://app.birdweather.com/api/v1",
+          "description": "Production server"
+        }
+      ],
+ "paths": {
+            "/stations/{api_key}/": {
+                "get": {
+                    "summary": "Get a list of stations",
+                    "description": "Returns a list of stations with their metadata",
+                    "operationId": "GetStationData",
+                    "responses": {
+                        "200": {
+                            "description": "A list of stations",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/Station"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+"components": {
+            "schemas": {
+                "Station": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 123
+                        },
+                        "name": {
+                            "type": "string",
+                            "example": "Central Park"
+                        },
+                        "latitude": {
+                            "type": "number",
+                            "format": "double",
+                            "example": 40.785091
+                        },
+                        "longitude": {
+                            "type": "number",
+                            "format": "double",
+                            "example": -73.968285
+                        },
+                        "elevation": {
+                            "type": "number",
+                            "format": "double",
+                            "example": 10.0
+                        },
+                        "timezone": {
+                            "type": "string",
+                            "example": "America/New_York"
+                        }
+                    }
+                },
+                "/Species": {
+                    "type": "object",
+                    "properties": {
+                        "period": {
+                            "type": "string",
+                            "example": "week"
+                        },
+                        "since": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2023-06-18"
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "example": 10
+                        },
+                        "page": {
+                            "type": "integer",
+                            "example": 2
+                        },
+                        "sort": {
+                            "type": "string",
+                            "example": "common_name"
+                        },
+                        "order": {
+                            "type": "string",
+                            "example": "desc"
+                        },
+                        "species_id": {
+                            "type": "integer",
+                            "example": 305
+                        }
+                    }
+                },
+                "/Detections": {
+                    "type": "object",
+                    "properties": {
+                        "limit": {
+                            "type": "integer",
+                            "example": 10
+                        },
+                        "cursor": {
+                            "type": "integer",
+                            "example": 12345
+                        },
+                        "from": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2023-06-18"
+                        },
+                        "to": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2023-07-05"
+                        },
+                        "order": {
+                            "type": "string",
+                            "example": "asc"
+                        },
+                        "species_id": {
+                            "type": "integer",
+                            "example": 305
+                        }
+                    }
+                },
+                "/Soundscape": {
+                    "type": "object",
+                    "properties": {
+                        "timestamp": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2022-04-27T23:41:37.212-07:00"
+                        }
+                    }
+                }
+            }
+        },
+    
+"security": [
+        {
+          "api_key" : []
+        }
+      ],
+"tags": [
+        {
+          "name": "Stations",
+          "description": "Operations related to BirdWeather stations"
+        },
+        {
+          "name": "Detections",
+          "description": "Operations related to BirdWeather detections"
+        },
+        {
+          "name": "Soundscapes",
+          "description": "Operations related to BirdWeather soundscapes"
+        }
+      ]
+    }
