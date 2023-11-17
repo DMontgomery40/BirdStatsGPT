@@ -1,16 +1,22 @@
 # BirdStatsGPT
-An OpenAI GPT calling on the eBird and BirdWeather APIs for combined bird power
 
-# BirdStats GPT
+## Introduction
+BirdStatsGPT is an exploratory project that combines the strengths of OpenAI's GPT with the eBird and BirdWeather APIs, aimed at enhancing BirdNET analysis. This project is a nod to the incredible work done in the fields of ornithology and technology, and it's an effort to contribute to this vibrant community.
 
-## Description
-BirdStats GPT is an innovative project that integrates birdwatching data from eBird and Birdweather APIs with AI technology. This project aims to enhance our understanding and appreciation of avian life through technology.
+## Project Background
+Rooted in a deep appreciation for the avian world, BirdStats GPT is an endeavor to merge birdwatching data with the evolving world of AI. The objective is to build upon existing technologies, offering a unique perspective on bird data analysis and visualization.
 
-## Setup
-(Describe how to set up your project. Include any installation instructions, dependencies, etc.)
+## Setup Challenges
+As I navigate through the early stages of this project, I'm focusing on the integration of different APIs. It's a learning curve, becuase I'm VERY new to this :)
 
-## Contributing
-Contributions to BirdStats GPT are welcome! If you have suggestions, bug reports, or contributions, please feel free to open an issue or submit a pull request.
+## Contributing and Acknowledgements
+This project thrives on community collaboration. A special shout-out to the creators and maintainers of the eBird, BirdWeather, and OpenAI GPT APIs – particularly Tim, who's been instrumental with BirdWeather. Your work inspires and enables projects like this.
 
-## License
-(Include information about your chosen license here, if applicable.)
+## Current Technical Roadblocks
+- **eBird API**: Running into some 401 errors that need resolving, both with private and public/test API keys.
+- **BirdWeather API**: Working on getting the API call structure right.
+
+While these might not be groundbreaking challenges for API wizards, they are crucial steps for the project. Your expertise, suggestions, and contributions are welcome and greatly appreciated.
+
+Thank you for your support and for being a part of this birdwatching-tech journey!
+
