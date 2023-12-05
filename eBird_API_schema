@@ -1,187 +1,73 @@
-   {
-   "openapi": "3.1.0",
-    "info": {
-      "title": "BirdStats GPT API",
-      "description": "API for BirdStats GPT, an application that integrates with the eBird API to fetch recent bird observations in a specific region.",
-      "version": "v1.0.0"
-    },
-    "servers": [
-      {
-        "url": "https://api.ebird.org/v2"
-      }
-    ],
-    "paths": {
-      "/data/obs/{regionCode}/recent": {
-        "get": {
-          "description": "Get the list of recent observations of birds seen in a specified region.",
-          "operationId": "GetRecentObservations",
-          "parameters": [
-            {
-              "name": "regionCode",
-              "in": "path",
-              "description": "The country, subnational1, subnational2, or location code.",
-              "required": true,
-              "schema": {
-                "type": "string"
-              }
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "eBird API",
+    "description": "API for accessing bird observation and species data.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.ebird.org/v2",
+      "description": "eBird API Server"
+    }
+  ],
+  "paths": {
+    "/data/obs/geo/recent": {
+      "get": {
+        "operationId": "getRecentObservations",
+        "description": "Get recent bird observations for a specified region.",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float"
             },
-            {
-              "name": "back",
-              "in": "query",
-              "description": "The number of days back to fetch observations (1-30).",
-              "required": false,
-              "schema": {
-                "type": "integer"
-              }
+            "description": "Latitude of the area."
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float"
             },
-            {
-              "name": "cat",
-              "in": "query",
-              "description": "Taxonomic categories to include in the results.",
-              "required": false,
-              "schema": {
-                "type": "string"
-              }
+            "description": "Longitude of the area."
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
             },
-            {
-              "name": "hotspot",
-              "in": "query",
-              "description": "Only fetch observations from hotspots (true/false).",
-              "required": false,
-              "schema": {
-                "type": "boolean"
-              }
-            },
-            {
-              "name": "includeProvisional",
-              "in": "query",
-              "description": "Include observations which have not yet been reviewed (true/false).",
-              "required": false,
-              "schema": {
-                "type": "boolean"
-              }
-            },
-            {
-              "name": "maxResults",
-              "in": "query",
-              "description": "Maximum number of observations to fetch (1-10000).",
-              "required": false,
-              "schema": {
-                "type": "integer"
-              }
-            },
-            {
-              "name": "r",
-              "in": "query",
-              "description": "Fetch observations from up to 10 locations.",
-              "required": false,
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "sppLocale",
-              "in": "query",
-              "description": "Language for species common names.",
-              "required": false,
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful response with an array of bird observations",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Observation"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "tags": [
-            "Observations"
-          ]
-        }
-      }
-    },
-     "components": {
-    "schemas": {
-      "Observation": {
-        "type": "object",
-        "properties": {
-          "speciesCode": {
-            "type": "string",
-            "example": "hoocro1"
-          },
-          "comName": {
-            "type": "string",
-            "example": "Hooded Crow"
-          },
-          "sciName": {
-            "type": "string",
-            "example": "Corvus cornix"
-          },
-          "locId": {
-            "type": "string",
-            "example": "L7884500"
-          },
-          "locName": {
-            "type": "string",
-            "example": "улица Старикова, Chundzha KZ-Almaty (43.5309,79.4551)"
-          },
-          "obsDt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2020-01-21 16:35"
-          },
-          "howMany": {
-            "type": "integer",
-            "example": 1
-          },
-          "lat": {
-            "type": "number",
-            "format": "double",
-            "example": 43.530936
-          },
-          "lng": {
-            "type": "number",
-            "format": "double",
-            "example": 79.455132
-          },
-          "obsValid": {
-            "type": "boolean",
-            "example": true
-          },
-          "obsReviewed": {
-            "type": "boolean",
-            "example": false
+            "description": "Maximum number of results to return."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with bird observation data."
           }
         }
       }
-    },
+    }
+  },
+  "components": {
     "securitySchemes": {
-      "api_key": {
+      "apiKey": {
         "type": "apiKey",
         "in": "header",
-        "name": "X-eBirdApiToken"
+        "name": "x-ebirdapitoken"
       }
-    }
+    },
+    "schemas": {}
   },
   "security": [
     {
-      "api_key": []
-    }
-  ],
-  "tags": [
-    {
-      "name": "Observations",
-      "description": "Operations related to fetching recent bird observations"
+      "apiKey": []
     }
   ]
 }
