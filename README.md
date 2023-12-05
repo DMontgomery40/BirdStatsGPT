@@ -16,6 +16,7 @@ This project thrives on community collaboration. A special shout-out to the crea
 ## Current Technical Roadblocks
 - **eBird API**: Running into some 401 errors that need resolving, both with private and public/test API keys.
 - **BirdWeather API**: Working on getting the API call structure right.
+- **BirdBuddy API** I am nowhere with this...
 
 While these might not be groundbreaking challenges for API wizards, they are crucial steps for the project. Your expertise, suggestions, and contributions are welcome and greatly appreciated.
 
