@@ -1,0 +1,265 @@
+openapi: 3.0.0
+info:
+  title: BirdWeather API
+  version: 1.0.0
+  description: API for accessing BirdWeather station data including detections, soundscapes, and species stats.
+servers:
+  - url: https://app.birdweather.com/api/v1
+    description: Production server
+components: 
+  schemas:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+paths:
+  /stations/{token}/detections:
+    get:
+      summary: Get detections for a station
+      description: Retrieves detection data from a specific BirdWeather station.
+      operationId: getDetections
+      parameters:
+        - name: token
+          in: path
+          required: true
+          description: Unique identifier for the BirdWeather station.
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: Start timestamp for detections in ISO8601 format.
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: End timestamp for detections in ISO8601 format.
+          schema:
+            type: string
+            format: date-time
+        - name: species_id
+          in: query
+          description: Filter detections by species.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Limit number of detection results.
+          schema:
+            type: integer
+        - name: order
+          in: query
+          description: Order of detection results.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response with detections data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  detections:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        species:
+                          type: string
+                          description: Name of the species detected.
+                        timestamp:
+                          type: string
+                          format: date-time
+                          description: Timestamp of the detection.
+                        confidence:
+                          type: number
+                          description: Confidence level of the detection.
+        "400":
+          description: Bad request due to invalid parameters.
+        "401":
+          description: Unauthorized access due to missing or invalid authentication token.
+        "500":
+          description: Internal server error.
+      security:
+        - apiKey: []
+  /stations/{token}/soundscapes:
+    get:
+      summary: Get soundscapes for a station
+      description: Retrieves sounds from a specific BirdWeather station.
+      operationId: getSoundscapes
+      parameters:
+        - name: token
+          in: path
+          required: true
+          description: Unique identifier for the BirdWeather station.
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: Start timestamp for soundscape in ISO8601 format.
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: End timestamp for soundscape in ISO8601 format.
+          schema:
+            type: string
+            format: date-time
+        - name: detections
+          in: query
+          description: Include detections in soundscape.
+          schema:
+            type: boolean
+        - name: species_id
+          in: query
+          description: Filter soundscape by species.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Limit number of soundscape results.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response with soundscapes data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  soundscapes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        timestamp:
+                          type: string
+                          format: date-time
+                          description: Timestamp of the soundscape.
+                        detections:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              species:
+                                type: string
+                                description: Name of the species detected in the soundscape.
+                              confidence:
+                                type: number
+                                description: Confidence level of the detection in the soundscape.
+        "400":
+          description: Bad request due to invalid parameters.
+        "401":
+          description: Unauthorized access due to missing or invalid authentication token.
+        "500":
+          description: Internal server error.
+      security:
+        - apiKey: []
+  /stations/{token}/species:
+      get:
+        summary: List species detected by a station
+        description: Returns a list of species detected by the station, along with their detection counts.
+        operationId: getSpecies
+        parameters:
+          - name: token
+            in: path
+            required: true
+            description: Unique identifier for the BirdWeather station.
+            schema:
+              type: string
+          - name: period
+            in: query
+            description: "The time period to filter detections day week or month, default: day."
+            schema:
+              type: string
+          - name: since
+            in: query
+            description: Timestamp to filter detections from, in ISO8601 format. Overrides period if passed.
+            schema:
+              type: string
+              format: date-time
+          - name: limit
+            in: query
+            description: "The maximum number of species to return (max 100, default: 100)."
+            schema:
+              type: integer
+          - name: page
+            in: query
+            description: "The page number of species to return (default: 1)."
+            schema:
+              type: integer
+          - name: sort
+            in: query
+            description: "Alternative field to sort by [common_name / scientific_name / top] (default: top)."
+            schema:
+              type: string
+          - name: order
+            in: query
+            description: "Sort order [asc / desc] (default: asc when sorting by name, otherwise desc)."
+            schema:
+              type: string
+          - name: species_id
+            in: query
+            description: Limit results to the given species.
+            schema:
+              type: integer
+        responses:
+          "200":
+            description: Successful response with species data.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                    species:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          commonName:
+                            type: string
+                          scientificName:
+                            type: string
+                          color:
+                            type: string
+                          imageUrl:
+                            type: string
+                            format: uri
+                          thumbnailUrl:
+                            type: string
+                            format: uri
+                          detections:
+                            type: object
+                            properties:
+                              total:
+                                type: integer
+                              almostCertain:
+                                type: integer
+                              veryLikely:
+                                type: integer
+                              uncertain:
+                                type: integer
+                              unlikely:
+                                type: integer
+                          latestDetectionAt:
+                            type: string
+                            format: date-time
+          "400":
+            description: Bad request due to invalid parameters.
+          "401":
+            description: Unauthorized access due to missing or invalid authentication token.
+          "500":
+            description: Internal server error.
+        security:
+          - apiKey: []
