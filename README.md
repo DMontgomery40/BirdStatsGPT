@@ -1,7 +1,7 @@
 # BirdStatsGPT
 
 ## Introduction
-BirdStatsGPT is a custom GPT that combines the strengths of OpenAI's LLM (currently GPT-4-1106-preview)  / gpt-4-gizmo) with the eBird and BirdWeather APIs (among others), aimed at enhancing the interpratation of BirdNET Analysis data. This project is a nod to the incredible work done in the fields of ornithology and technology, and it's an effort to contribute to this vibrant community.
+BirdStatsGPT is a custom GPT that combines the strengths of OpenAI's LLM (currently GPT-4-1106-preview)  / gpt-4-gizmo) with the eBird and BirdWeather APIs (among others), aimed at enhancing the interpretation of BirdNET Analysis data. This project is a nod to the incredible work done in the fields of ornithology and technology, and it's an effort to contribute to this vibrant community.
 
 
 ## Project Background
