@@ -1,60 +1,210 @@
-openapi: 3.0.0
+openapi: 3.0.2
 info:
   title: BirdWeather API
+  description: API for retrieving bird detection data and soundscape recordings
   version: 1.0.0
-  description: API for accessing BirdWeather station data including detections, soundscapes, and species stats.
 servers:
-  - url: https://app.birdweather.com/api/v1
-    description: Production server
-components: 
-  schemas:
+- url: https://app.birdweather.com/api/v1
+components:
+  securitySchemes:
     apiKey:
       type: apiKey
+      name: apiKey
       in: header
-      name: X-API-KEY
+  schemas:
+    SpeciesInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        commonName:
+          type: string
+        scientificName:
+          type: string
+        color:
+          type: string
+        imageUrl:
+          type: string
+          format: uri
+        thumbnailUrl:
+          type: string
+          format: uri
+        wikipediaUrl:
+          type: string
+          format: uri
+        wikipediaSummary:
+          type: string
+        alpha:
+          type: string
+        alpha6:
+          type: string
+        ebirdCode:
+          type: string
+        ebirdUrl:
+          type: string
+          format: uri
+        imageCredit:
+          type: string
+        imageCreditHtml:
+          type: string
+        imageLicense:
+          type: string
+        imageLicenseUrl:
+          type: string
+          format: uri
+    SpeciesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        species:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Species"
+    Species:
+      type: object
+      properties:
+        id:
+          type: integer
+        commonName:
+          type: string
+        scientificName:
+          type: string
+        color:
+          type: string
+        imageUrl:
+          type: string
+          format: uri
+        thumbnailUrl:
+          type: string
+          format: uri
+        detections:
+          type: object
+          properties:
+            total:
+              type: integer
+            almostCertain:
+              type: integer
+            veryLikely:
+              type: integer
+            uncertain:
+              type: integer
+            unlikely:
+              type: integer
+        latestDetectionAt:
+          type: string
+          format: date-time
+    Detection:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the detection
+        station_id:
+          type: integer
+          description: The ID of the station that made the detection
+        timestamp:
+          type: string
+          format: date-time
+          description: The timestamp of the detection in ISO8601 format
+        species:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: The ID of the species
+            common_name:
+              type: string
+              description: The common name of the species
+            scientific_name:
+              type: string
+              description: The scientific name of the species
+            color:
+              type: string
+              description: The color of the species
+            image_url:
+              type: string
+              description: The URL of the image of the species
+            thumbnail_url:
+              type: string
+              description: The URL of the thumbnail image of the species
+        lat:
+          type: string
+          format: latitude
+          description: The latitude of the detection
+        lon:
+          type: string
+          format: longitude
+          description: The longitude of the detection
+        confidence:
+          type: number
+          description: The confidence of the detection
+        probability:
+          type: number
+          description: The probability of the detection
+        score:
+          type: number
+          description: The score of the detection
+        certainty:
+          type: string
+          description: The certainty of the detection
+        algorithm:
+          type: string
+          description: The algorithm used for the detection
+        metadata:
+          type: object
+          description: The metadata of the detection
+        soundscape:
+          type: object
+          properties:
+            url:
+              type: string
+              description: The URL of the soundscape recording
+            start_time:
+              type: string
+              format: time
+              description: The start time of the soundscape recording in ISO8601 format
+            end_time:
+              type: string
+              format: time
+              description: The end time of the soundscape recording in ISO8601 format
 paths:
-  /stations/{token}/detections:
+  "/stations/{token}/stats":
     get:
-      summary: Get detections for a station
-      description: Retrieves detection data from a specific BirdWeather station.
-      operationId: getDetections
+      operationId: getStats
+      summary: Fetch station statistics
+      description: Retrieves statistics for a given station, including the number
+        of detections, species detected, and top species
       parameters:
-        - name: token
-          in: path
-          required: true
-          description: Unique identifier for the BirdWeather station.
-          schema:
-            type: string
-        - name: from
-          in: query
-          description: Start timestamp for detections in ISO8601 format.
-          schema:
-            type: string
-            format: date-time
-        - name: to
-          in: query
-          description: End timestamp for detections in ISO8601 format.
-          schema:
-            type: string
-            format: date-time
-        - name: species_id
-          in: query
-          description: Filter detections by species.
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Limit number of detection results.
-          schema:
-            type: integer
-        - name: order
-          in: query
-          description: Order of detection results.
-          schema:
-            type: string
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Station authentication token
+      - name: period
+        in: query
+        required: false
+        schema:
+          type: string
+          description: The time period to filter detections (day, week, month, year)
+      - name: since
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Timestamp to filter detections from, in ISO8601 format. Overrides
+            period if passed
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          description: The maximum number of detections to return (max 100, default
+            100)
       responses:
-        "200":
-          description: Successful response with detections data.
+        '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -62,71 +212,85 @@ paths:
                 properties:
                   success:
                     type: boolean
+                    description: Whether the request was successful
                   detections:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        species:
-                          type: string
-                          description: Name of the species detected.
-                        timestamp:
-                          type: string
-                          format: date-time
-                          description: Timestamp of the detection.
-                        confidence:
-                          type: number
-                          description: Confidence level of the detection.
-        "400":
-          description: Bad request due to invalid parameters.
-        "401":
-          description: Unauthorized access due to missing or invalid authentication token.
-        "500":
-          description: Internal server error.
-      security:
-        - apiKey: []
-  /stations/{token}/soundscapes:
+                      "$ref": "#/components/schemas/Detection"
+                  pagination:
+                    type: object
+                    properties:
+                      limit:
+                        type: integer
+                        description: The maximum number of detections to return
+                      offset:
+                        type: integer
+                        description: The offset of the current page
+                      total:
+                        type: integer
+                        description: The total number of detections
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: The error message
+  "/stations/{token}/detections":
     get:
-      summary: Get soundscapes for a station
-      description: Retrieves sounds from a specific BirdWeather station.
-      operationId: getSoundscapes
+      operationId: getDetections
+      summary: List Detections
+      description: Lists all detections associated with this station in timestamp
+        descending order.
       parameters:
-        - name: token
-          in: path
-          required: true
-          description: Unique identifier for the BirdWeather station.
-          schema:
-            type: string
-        - name: from
-          in: query
-          description: Start timestamp for soundscape in ISO8601 format.
-          schema:
-            type: string
-            format: date-time
-        - name: to
-          in: query
-          description: End timestamp for soundscape in ISO8601 format.
-          schema:
-            type: string
-            format: date-time
-        - name: detections
-          in: query
-          description: Include detections in soundscape.
-          schema:
-            type: boolean
-        - name: species_id
-          in: query
-          description: Filter soundscape by species.
-          schema:
-            type: integer
-        - name: limit
-          in: query
-          description: Limit number of soundscape results.
-          schema:
-            type: integer
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: 'The maximum number of detections to return (max 100, default:
+          100).'
+        required: false
+        schema:
+          type: integer
+      - name: cursor
+        in: query
+        description: The ID of the last detection to begin pagination from.
+        required: false
+        schema:
+          type: integer
+      - name: from
+        in: query
+        description: The timestamp in ISO8601 format to filter detections from (inclusive).
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: The timestamp in ISO8601 format to filter detections to (inclusive).
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: 'Order to sort timestamps by (default: desc).'
+        required: false
+        schema:
+          type: string
+      - name: species_id
+        in: query
+        description: List only detections for the given species.
+        required: false
+        schema:
+          type: integer
       responses:
-        "200":
-          description: Successful response with soundscapes data.
+        '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -134,132 +298,131 @@ paths:
                 properties:
                   success:
                     type: boolean
-                  soundscapes:
+                    description: Whether the request was successful
+                  detections:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        timestamp:
-                          type: string
-                          format: date-time
-                          description: Timestamp of the soundscape.
-                        detections:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              species:
-                                type: string
-                                description: Name of the species detected in the soundscape.
-                              confidence:
-                                type: number
-                                description: Confidence level of the detection in the soundscape.
-        "400":
-          description: Bad request due to invalid parameters.
-        "401":
-          description: Unauthorized access due to missing or invalid authentication token.
-        "500":
-          description: Internal server error.
-      security:
-        - apiKey: []
-  /stations/{token}/species:
-      get:
-        summary: List species detected by a station
-        description: Returns a list of species detected by the station, along with their detection counts.
-        operationId: getSpecies
-        parameters:
-          - name: token
-            in: path
-            required: true
-            description: Unique identifier for the BirdWeather station.
+                      "$ref": "#/components/schemas/Detection"
+  "/stations/{token}/species":
+    get:
+      summary: Returns a list of species detected by the station
+      operationId: getTopSpecies
+      tags:
+      - Species
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Station authentication token
+      - name: period
+        in: query
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          - all
+          default: day
+        description: The time period to filter detections.
+      - name: since
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Timestamp to filter detections from, in ISO8601 format.
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 100
+          maximum: 100
+        description: The maximum number of species to return.
+      - name: page
+        in: query
+        schema:
+          type: integer
+          default: 1
+        description: The page number of species to return.
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - common_name
+          - scientific_name
+          - top
+          default: top
+        description: Field to sort by.
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        description: Sort order.
+      - name: species_id
+        in: query
+        schema:
+          type: integer
+        description: Limit results to the given species.
+      responses:
+        '200':
+          description: List of species detected by the station
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SpeciesResponse"
+  "/species/lookup":
+    post:
+      operationId: lookupMultipleSpecies
+      summary: Lookup Multiple Species
+      requestBody:
+        required: true
+        content:
+          application/json:
             schema:
-              type: string
-          - name: period
-            in: query
-            description: "The time period to filter detections day week or month, default: day."
-            schema:
-              type: string
-          - name: since
-            in: query
-            description: Timestamp to filter detections from, in ISO8601 format. Overrides period if passed.
-            schema:
-              type: string
-              format: date-time
-          - name: limit
-            in: query
-            description: "The maximum number of species to return (max 100, default: 100)."
-            schema:
-              type: integer
-          - name: page
-            in: query
-            description: "The page number of species to return (default: 1)."
-            schema:
-              type: integer
-          - name: sort
-            in: query
-            description: "Alternative field to sort by [common_name / scientific_name / top] (default: top)."
-            schema:
-              type: string
-          - name: order
-            in: query
-            description: "Sort order [asc / desc] (default: asc when sorting by name, otherwise desc)."
-            schema:
-              type: string
-          - name: species_id
-            in: query
-            description: Limit results to the given species.
-            schema:
-              type: integer
-        responses:
-          "200":
-            description: Successful response with species data.
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    success:
-                      type: boolean
-                    species:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          commonName:
-                            type: string
-                          scientificName:
-                            type: string
-                          color:
-                            type: string
-                          imageUrl:
-                            type: string
-                            format: uri
-                          thumbnailUrl:
-                            type: string
-                            format: uri
-                          detections:
-                            type: object
-                            properties:
-                              total:
-                                type: integer
-                              almostCertain:
-                                type: integer
-                              veryLikely:
-                                type: integer
-                              uncertain:
-                                type: integer
-                              unlikely:
-                                type: integer
-                          latestDetectionAt:
-                            type: string
-                            format: date-time
-          "400":
-            description: Bad request due to invalid parameters.
-          "401":
-            description: Unauthorized access due to missing or invalid authentication token.
-          "500":
-            description: Internal server error.
-        security:
-          - apiKey: []
+              type: object
+              properties:
+                species:
+                  type: array
+                  items:
+                    type: string
+                    description: BirdNET identifier (Scientific Name_Common Name)
+                  description: Array of BirdNET identifiers to look up.
+                fields:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of species fields to include. Leave blank to
+                    include all.
+              required:
+              - species
+      responses:
+        '200':
+          description: Successful lookup of species information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  species:
+                    type: object
+                    additionalProperties:
+                      "$ref": "#/components/schemas/SpeciesInfo"
+                required:
+                - success
+                - species                                  
+security:
+- apiKey: []
+
+
+
+
+
+
