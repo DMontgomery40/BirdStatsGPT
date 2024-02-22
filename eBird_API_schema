@@ -1,270 +1,352 @@
 openapi: 3.0.0
 info:
-  title: Recent Notable Bird Observations API
-  description: API for retrieving recent, notable bird observations in a region.
+  title: eBird API Integration
   version: 1.0.0
 servers:
-  - url: https://api.ebird.org/v2
+  - url: 'https://api.ebird.org/v2'
 paths:
-  /data/obs/{regionCode}/recent/notable:
+  /data/obs/{regionCode}/historic/{y}/{m}/{d}:
     get:
-      summary: Get recent notable bird observations
-      description: |
-        Get the list of recent, notable observations (up to 30 days ago) of birds seen in a country, region, or location. Notable observations can be for locally or nationally rare species or are otherwise unusual, e.g., over-wintering birds in a species which is normally only a summer visitor.
-      operationId: getRecentNotableObservations
+      summary: Historic Observations on a Date
+      operationId: getHistoricObservations
       parameters:
         - name: regionCode
           in: path
           required: true
-          description: The country, subnational1, subnational2, or location code.
           schema:
             type: string
-        - name: back
-          in: query
-          description: The number of days back to fetch observations (1-30). Default is 14.
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 30
-        - name: detail
-          in: query
-          description: Include a subset (simple) or all (full) of the fields available.
+            pattern: ^example-[0-9a-z]+$
+            maxLength: 32
+        - name: y
+          in: path
+          required: true
           schema:
             type: string
-            enum: [simple, full]
-            default: simple
-        - name: hotspot
-          in: query
-          description: Only fetch observations from hotspots (true/false). Default is false.
-          schema:
-            type: boolean
-            default: false
-        - name: maxResults
-          in: query
-          description: Only fetch this number of observations (1-10000).
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 10000
-        - name: r
-          in: query
-          description: Fetch observations from up to 10 locations. Specify any location code.
+            pattern: ^example-[0-9a-z]+$
+            maxLength: 32
+        - name: m
+          in: path
+          required: true
           schema:
             type: string
-        - name: sppLocale
-          in: query
-          description: Use this language for species common names (any available locale).
+            pattern: ^example-[0-9a-z]+$
+            maxLength: 32
+        - name: d
+          in: path
+          required: true
           schema:
             type: string
-            default: en
       responses:
         '200':
           description: Successful response
-          content:
-            application/json:
-              example:
-                - speciesCode: libher
-                  comName: Little Blue Heron
-                  sciName: Egretta caerulea
-                  locId: L295658
-                  locName: Wallkill River NWR--Liberty Marsh (NY)
-                  obsDt: "2017-08-23 10:11"
-                  howMany: 1
-                  lat: 41.2833266
-                  lng: -74.5262526
-                  obsValid: false
-                  obsReviewed: false
-                  locationPrivate: false
-                  subnational2Code: US-NY-071
-                  subnational2Name: Orange
-                  subnational1Code: US-NY
-                  subnational1Name: New York
-                  countryCode: US
-                  countryName: United States
-                  userDisplayName: Kathleen Ashman
-                  subId: S38783126
-                  obsId: OBS527233428
-                  checklistId: CL22364
-                  presenceNoted: false
-                  hasComments: false
-                  firstName: Kathleen
-                  lastName: Astahman
-                  hasRichMedia: false
-                  locID: L295658
-                - speciesCode: larspa
-                  comName: Lark Sparrow
-                  sciName: Chondestes grammacus
-                  locId: L109147
-                  locName: Jones Beach SP--West End
-                  obsDt: "2017-08-23 10:00"
-                  howMany: 1
-                  lat: 40.5786111
-                  lng: -73.5727778
-                  obsValid: true
-                  obsReviewed: true
-                  locationPrivate: false
-                  subnational2Code: US-NY-059
-                  subnational2Name: Nassau
-                  subnational1Code: US-NY
-                  subnational1Name: New York
-                  countryCode: US
-                  countryName: United States
-                  userDisplayName: Stacy Meyerheinrich
-                  subId: S38780649
-                  obsId: OBS527201666
-                  checklistId: CL22361
-                  presenceNoted: false
-                  hasComments: false
-                  firstName: Stacy
-                  lastName: Moyerhainrich
-                  hasRichMedia: false
-                  locID: L109147
-                - speciesCode: libher
-                  comName: Little Blue Heron
-                  sciName: Egretta caerulea
-                  locId: L295658
-                  locName: Wallkill River NWR--Liberty Marsh (NY)
-                  obsDt: "2017-08-23 09:00"
-                  howMany: 1
-                  lat: 41.2833266
-                  lng: -74.5262526
-                  obsValid: false
-                  obsReviewed: false
-                  locationPrivate: false
-                  subnational2Code: US-NY-071
-                  subnational2Name: Orange
-                  subnational1Code: US-NY
-                  subnational1Name: New York
-                  countryCode: US
-                  countryName: United States
-                  userDisplayName: clay spencer
-                  subId: S38779435
-                  obsId: OBS527186633
-                  checklistId: CL22364
-                  presenceNoted: false
-                  hasComments: false
-                  firstName: clay
-                  lastName: spencer
-                  hasRichMedia: false
-                  locID: L295658
-        '400':
-          description: Bad request
         '401':
           description: Unauthorized
         '403':
-          description: Forbidden
+          description: Unauthorized
         '404':
-          description: Not found
-        '500':
-          description: Internal server error
-  /data/obs/{regionCode}/recent/{speciesCode}:
+          description: Unauthorized
+        '429':
+          description: Unauthorized
+        default:
+          description: Unauthorized
+  /product/top100/{regionCode}/{y}/{m}/{d}:
     get:
-      summary: Get recent observations of a species in a region
-      description: |
-        Get the recent observations, up to 30 days ago, of a particular species in a country, region, or location. Results include only the most recent observation from each location in the region specified.
-      operationId: getRecentSpeciesObservations
+      summary: Top 100 Contributors on a Given Date
+      operationId: getTopContributors
       parameters:
         - name: regionCode
           in: path
           required: true
-          description: The country, subnational1, subnational2, or location code.
           schema:
             type: string
+        - name: y
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: m
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: d
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+  /data/obs/geo/recent/{speciesCode}:
+    get:
+      summary: Recent Nearby Observations of a Species
+      operationId: getRecentNearbyObservations
+      parameters:
         - name: speciesCode
           in: path
           required: true
-          description: The eBird species code.
           schema:
             type: string
-        - name: back
+        - name: lat
           in: query
-          description: The number of days back to fetch observations (1-30). Default is 14.
+          required: true
           schema:
-            type: integer
-            minimum: 1
-            maximum: 30
-        - name: hotspot
+            type: number
+            format: double
+        - name: lng
           in: query
-          description: Only fetch observations from hotspots (true/false). Default is false.
+          required: true
           schema:
-            type: boolean
-            default: false
-        - name: includeProvisional
-          in: query
-          description: Include observations which have not yet been reviewed (true/false). Default is false.
-          schema:
-            type: boolean
-            default: false
-        - name: maxResults
-          in: query
-          description: Only fetch this number of observations (1-10000). Default is to fetch all.
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 10000
-        - name: r
-          in: query
-          description: Fetch observations from up to 10 locations. Specify any location code.
-          schema:
-            type: string
-        - name: sppLocale
-          in: query
-          description: Use this language for species common names (any available locale).
-          schema:
-            type: string
-            default: en
+            type: number
+            format: double
       responses:
         '200':
           description: Successful response
+  /data/nearest/geo/recent/{speciesCode}:
+    get:
+      summary: Nearest Observations of a Species
+      operationId: getNearestObservations
+      parameters:
+        - name: speciesCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+        - name: lng
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+      responses:
+        '200':
+          description: Successful response
+  /data/obs/geo/recent{speciesCode}:
+    get:
+      summary: Get the list of recent observations of birds seen at locations
+      parameters:
+      - name: lat
+        in: query
+        required: true
+        description: Latitude to 2 decimal places
+        schema:
+          type: number
+      - name: lng
+        in: query
+        required: true
+        description: Longitude to 2 decimal places
+        schema:
+          type: number
+      - name: back
+        in: query
+        description: The number of days back to fetch observations.
+        schema:
+          type: integer
+          default: 14
+          minimum: 1
+          maximum: 30
+      - name: cat
+        in: query
+        description: Only fetch observations from these taxonomic categories.
+        schema:
+          type: string
+          default: all
+      - name: dist
+        in: query
+        description: The search radius from the given position, in kilometers.
+        schema:
+          type: integer
+          default: 25
+          minimum: 0
+          maximum: 50
+      - name: hotspot
+        in: query
+        description: Only fetch observations from hotspots.
+        schema:
+          type: boolean
+          default: false
+      - name: includeProvisional
+        in: query
+        description: Include observations which have not yet been reviewed.
+        schema:
+          type: boolean
+          default: false
+      - name: maxResults
+        in: query
+        description: Only fetch this number of observations.
+        schema:
+          type: integer
+          default: all
+          minimum: 1
+          maximum: 10000
+      - name: sort
+        in: query
+        description: Sort observations by taxonomy or by date, most recent first.
+        schema:
+          type: string
+          default: date
+      - name: sppLocale
+        in: query
+        description: Use this language for species common names.
+        schema:
+          type: string
+          default: en
+      responses:
+        '200':
+          description: List of recent observations
           content:
             application/json:
-              example:
-                - speciesCode: cangoo
-                  comName: Canada Goose
-                  sciName: Branta canadensis
-                  locId: L1150539
-                  locName: Hanshaw Rd. fields
-                  obsDt: "2017-08-23 20:05"
-                  howMany: 30
-                  lat: 42.4663513
-                  lng: -76.4531064
-                  obsValid: true
-                  obsReviewed: false
-                  locationPrivate: false
-                - speciesCode: cangoo
-                  comName: Canada Goose
-                  sciName: Branta canadensis
-                  locId: L6208778
-                  locName: 169 Locust Ln, Richfield US-NY (42.8366,-75.0028)"
-                  obsDt: "2017-08-23 19:45"
-                  howMany: 13
-                  lat: 42.83663
-                  lng: -75.002794
-                  obsValid: true
-                  obsReviewed: false
-                  locationPrivate: true
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not found
-        '500':
-          description: Internal server error
-components:
-  securitySchemes:
-    apiKey:
-      type: apiKey
-      name: x-ebirdapitoken
-      in: header
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Observation"
+  /data/obs/{regionCode}/recent:
+    get:
+      operationId: getRecentObservations
+      summary: Recent observations in a region
+      parameters:
+      - name: regionCode
+        in: path
+        required: true
+        description: The country, subnational1, subnational2 or location code.
+        schema:
+          type: string
+      - name: back
+        in: query
+        description: The number of days back to fetch observations.
+        schema:
+          type: integer
+          default: 14
+          minimum: 1
+          maximum: 30
+      - name: cat
+        in: query
+        description: Only fetch observations from these taxonomic categories.
+        schema:
+          type: string
+          default: all
+      - name: hotspot
+        in: query
+        description: Only fetch observations from hotspots.
+        schema:
+          type: boolean
+          default: false
+      - name: includeProvisional
+        in: query
+        description: Include observations which have not yet been reviewed.
+        schema:
+          type: boolean
+          default: false
+      - name: maxResults
+        in: query
+        description: Only fetch this number of observations.
+        schema:
+          type: integer
+          default: all
+          minimum: 1
+          maximum: 10000
+      - name: r
+        in: query
+        description: Fetch observations from up to 10 locations.
+        schema:
+          type: string
+      - name: sppLocale
+        in: query
+        description: Use this language for species common names.
+        schema:
+          type: string
+          default: en
+      responses:
+        '200':
+          description: A list of recent observations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Observation"                        
+  /data/obs/{regionCode}/recent/notable:
+    get:
+      operationId: getRecentNotableObservations
+      summary: Recent notable observations in a region
+      parameters:
+      - name: regionCode
+        in: path
+        required: true
+        description: The country, subnational1, subnational2 or location code.
+        schema:
+          type: string
+      - name: back
+        in: query
+        required: false
+        description: The number of days back to fetch observations.
+        schema:
+          type: integer
+          default: 14
+          minimum: 1
+          maximum: 30
+      - name: detail
+        in: query
+        required: false
+        description: Include a subset (simple), or all (full), of the fields available.
+        schema:
+          type: string
+          enum:
+          - simple
+          - full
+          default: simple
+      responses:
+        '200':
+          description: A list of recent notable observations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Observation"
+  /data/obs/geo/recent:
+    get:
+      operationId: getRecentNearbyObservations
+      summary: Recent nearby observations
+      parameters:
+      - name: lat
+        in: query
+        required: true
+        description: Latitude to 2 decimal places.
+        schema:
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+      - name: lng
+        in: query
+        required: true
+        description: Longitude to 2 decimal places.
+        schema:
+          type: number
+          format: float
+          minimum: -180
+          maximum: 180
+      responses:
+        '200':
+          description: A list of recent nearby observations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Observation"
+components:        
   schemas:
-    ExampleResponse:
+    Observation:
       type: object
       properties:
-        speciesCode:
-          type: string
         comName:
           type: string
         sciName:
@@ -287,5 +369,61 @@ components:
           type: boolean
         locationPrivate:
           type: boolean
-  security:
-    - apiKey: []
+        speciesCode:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    HistoricObservationResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          speciesCode:
+            type: string
+          comName:
+            type: string
+          sciName:
+            type: string
+          locId:
+            type: string
+          locName:
+            type: string
+          obsDt:
+            type: string
+            format: date-time
+          howMany:
+            type: integer
+            format: int32
+          lat:
+            type: number
+            format: double
+          lng:
+            type: number
+            format: string
+          obsValid:
+            type: boolean
+          obsReviewed:
+            type: boolean
+          locationPrivate:
+            type: boolean
+          subId:
+            type: string
+          subnational1Code:
+            type: string
+          subnational1Name:
+            type: string
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-eBirdApiToken
+security:
+  - ApiKeyAuth: []
+
+
+ 
