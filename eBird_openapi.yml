@@ -15,22 +15,16 @@ paths:
           required: true
           schema:
             type: string
-            pattern: ^example-[0-9a-z]+$
-            maxLength: 32
         - name: y
           in: path
           required: true
           schema:
             type: string
-            pattern: ^example-[0-9a-z]+$
-            maxLength: 32
         - name: m
           in: path
           required: true
           schema:
             type: string
-            pattern: ^example-[0-9a-z]+$
-            maxLength: 32
         - name: d
           in: path
           required: true
@@ -39,16 +33,20 @@ paths:
       responses:
         '200':
           description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricObservationResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/ErrorResponse'
         '403':
-          description: Unauthorized
+          $ref: '#/components/responses/ErrorResponse'
         '404':
-          description: Unauthorized
+          $ref: '#/components/responses/ErrorResponse'
         '429':
-          description: Unauthorized
-        default:
-          description: Unauthorized
+          $ref: '#/components/responses/ErrorResponse'
   /product/top100/{regionCode}/{y}/{m}/{d}:
     get:
       summary: Top 100 Contributors on a Given Date
@@ -76,7 +74,23 @@ paths:
             type: string
       responses:
         '200':
-          description: Successful response
+          description: List of top contributors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contributor'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
   /data/obs/geo/recent/{speciesCode}:
     get:
       summary: Recent Nearby Observations of a Species
@@ -92,16 +106,28 @@ paths:
           required: true
           schema:
             type: number
-            format: double
         - name: lng
           in: query
           required: true
           schema:
             type: number
-            format: double
       responses:
         '200':
-          description: Successful response
+          description: List of recent nearby observations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationArray'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
   /data/nearest/geo/recent/{speciesCode}:
     get:
       summary: Nearest Observations of a Species
@@ -117,313 +143,417 @@ paths:
           required: true
           schema:
             type: number
-            format: double
         - name: lng
           in: query
           required: true
           schema:
             type: number
-            format: double
       responses:
         '200':
-          description: Successful response
-  /data/obs/geo/recent{speciesCode}:
+          description: List of nearest observations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationArray'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /data/obs/{regionCode}/recent:
     get:
-      summary: Get the list of recent observations of birds seen at locations
+      summary: Recent Observations in a Region
+      operationId: getRecentObservations
       parameters:
-      - name: lat
-        in: query
-        required: true
-        description: Latitude to 2 decimal places
-        schema:
-          type: number
-      - name: lng
-        in: query
-        required: true
-        description: Longitude to 2 decimal places
-        schema:
-          type: number
-      - name: back
-        in: query
-        description: The number of days back to fetch observations.
-        schema:
-          type: integer
-          default: 14
-          minimum: 1
-          maximum: 30
-      - name: cat
-        in: query
-        description: Only fetch observations from these taxonomic categories.
-        schema:
-          type: string
-          default: all
-      - name: dist
-        in: query
-        description: The search radius from the given position, in kilometers.
-        schema:
-          type: integer
-          default: 25
-          minimum: 0
-          maximum: 50
-      - name: hotspot
-        in: query
-        description: Only fetch observations from hotspots.
-        schema:
-          type: boolean
-          default: false
-      - name: includeProvisional
-        in: query
-        description: Include observations which have not yet been reviewed.
-        schema:
-          type: boolean
-          default: false
-      - name: maxResults
-        in: query
-        description: Only fetch this number of observations.
-        schema:
-          type: integer
-          default: all
-          minimum: 1
-          maximum: 10000
-      - name: sort
-        in: query
-        description: Sort observations by taxonomy or by date, most recent first.
-        schema:
-          type: string
-          default: date
-      - name: sppLocale
-        in: query
-        description: Use this language for species common names.
-        schema:
-          type: string
-          default: en
+        - name: regionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: back
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: cat
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: hotspot
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: includeProvisional
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: maxResults
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: sppLocale
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: List of recent observations
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  "$ref": "#/components/schemas/Observation"
-  /data/obs/{regionCode}/recent:
-    get:
-      operationId: getRecentObservations
-      summary: Recent observations in a region
-      parameters:
-      - name: regionCode
-        in: path
-        required: true
-        description: The country, subnational1, subnational2 or location code.
-        schema:
-          type: string
-      - name: back
-        in: query
-        description: The number of days back to fetch observations.
-        schema:
-          type: integer
-          default: 14
-          minimum: 1
-          maximum: 30
-      - name: cat
-        in: query
-        description: Only fetch observations from these taxonomic categories.
-        schema:
-          type: string
-          default: all
-      - name: hotspot
-        in: query
-        description: Only fetch observations from hotspots.
-        schema:
-          type: boolean
-          default: false
-      - name: includeProvisional
-        in: query
-        description: Include observations which have not yet been reviewed.
-        schema:
-          type: boolean
-          default: false
-      - name: maxResults
-        in: query
-        description: Only fetch this number of observations.
-        schema:
-          type: integer
-          default: all
-          minimum: 1
-          maximum: 10000
-      - name: r
-        in: query
-        description: Fetch observations from up to 10 locations.
-        schema:
-          type: string
-      - name: sppLocale
-        in: query
-        description: Use this language for species common names.
-        schema:
-          type: string
-          default: en
-      responses:
-        '200':
-          description: A list of recent observations
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  "$ref": "#/components/schemas/Observation"                        
+                $ref: '#/components/schemas/ObservationArray'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
   /data/obs/{regionCode}/recent/notable:
     get:
+      summary: Recent Notable Observations in a Region
       operationId: getRecentNotableObservations
-      summary: Recent notable observations in a region
       parameters:
-      - name: regionCode
-        in: path
-        required: true
-        description: The country, subnational1, subnational2 or location code.
-        schema:
-          type: string
-      - name: back
-        in: query
-        required: false
-        description: The number of days back to fetch observations.
-        schema:
-          type: integer
-          default: 14
-          minimum: 1
-          maximum: 30
-      - name: detail
-        in: query
-        required: false
-        description: Include a subset (simple), or all (full), of the fields available.
-        schema:
-          type: string
-          enum:
-          - simple
-          - full
-          default: simple
+        - name: regionCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: back
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: detail
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
-          description: A list of recent notable observations
+          description: List of recent notable observations
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  "$ref": "#/components/schemas/Observation"
+                $ref: '#/components/schemas/ObservationArray'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
   /data/obs/geo/recent:
     get:
-      operationId: getRecentNearbyObservations
-      summary: Recent nearby observations
+      summary: Recent Nearby Observations
+      operationId: getRecentNearbyObservationsGeneral
       parameters:
-      - name: lat
-        in: query
-        required: true
-        description: Latitude to 2 decimal places.
-        schema:
-          type: number
-          format: float
-          minimum: -90
-          maximum: 90
-      - name: lng
-        in: query
-        required: true
-        description: Longitude to 2 decimal places.
-        schema:
-          type: number
-          format: float
-          minimum: -180
-          maximum: 180
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: lng
+          in: query
+          required: true
+          schema:
+            type: number
       responses:
         '200':
-          description: A list of recent nearby observations
+          description: List of recent nearby observations
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  "$ref": "#/components/schemas/Observation"
-components:        
+                $ref: '#/components/schemas/ObservationArray'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+
+components:
+  parameters:
+    regionCode:
+      name: regionCode
+      in: path
+      required: true
+      schema:
+        type: string
+    year:
+      name: y
+      in: path
+      description: Year of the observation.
+      required: true
+      schema:
+        type: string
+        pattern: '^\d{4}$'
+    month:
+      name: m
+      in: path
+      description: Month of the observation.
+      required: true
+      schema:
+        type: string
+        pattern: '^\d{1,2}$'
+        minLength: 1
+        maxLength: 2
+    day:
+      name: d
+      in: path
+      description: Day of the observation.
+      required: true
+      schema:
+        type: string
+        pattern: '^\d{1,2}$'
+        minLength: 1
+        maxLength: 2
+    speciesCode:
+      name: speciesCode
+      in: path
+      description: The unique code for the species observed.
+      required: true
+      schema:
+        type: string
+    lat:
+      name: lat
+      in: query
+      description: Latitude for nearby observations.
+      required: true
+      schema:
+        type: number
+        format: double
+    lng:
+      name: lng
+      in: query
+      description: Longitude for nearby observations.
+      required: true
+      schema:
+        type: number
+        format: double
+    back:
+      name: back
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 14
+        minimum: 1
+        maximum: 30
+    maxResults:
+      name: maxResults
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 200
+        minimum: 1
+        maximum: 10000
+    hotspot:
+      name: hotspot
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    includeProvisional:
+      name: includeProvisional
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    sppLocale:
+      name: sppLocale
+      in: query
+      required: false
+      schema:
+        type: string
+        default: 'en'
+    cat:
+      name: cat
+      in: query
+      description: Category of the species (e.g., 'domestic', 'form', 'hybrid', 'intergrade', 'issf', 'slash', 'species', 'spuh').
+      required: false
+      schema:
+        type: string
+        default: 'species'
+    detail:
+      name: detail
+      in: query
+      description: Level of detail for the observation records, can be 'simple' or 'full'.
+      required: false
+      schema:
+        type: string
+        enum:
+          - simple
+          - full
+        default: 'full'
   schemas:
+    HistoricObservationResponse:
+      type: object
+      properties:
+        speciesCode:
+          type: string
+          description: A unique code assigned to the species observed.
+        comName:
+          type: string
+          description: Common name of the species observed.
+        sciName:
+          type: string
+          description: Scientific name of the species observed.
+        locId:
+          type: string
+          description: Unique identifier for the location of the observation.
+        locName:
+          type: string
+          description: Name of the location where the observation was made.
+        obsDt:
+          type: string
+          description: Date and time of the observation.
+        howMany:
+          type: integer
+          description: The number of individuals observed.
+        lat:
+          type: number
+          format: double
+          description: Latitude of the observation location.
+        lng:
+          type: number
+          format: double
+          description: Longitude of the observation location.
+        obsValid:
+          type: boolean
+          description: Whether the observation has been validated.
+        obsReviewed:
+          type: boolean
+          description: Whether the observation has been reviewed.
+        locationPrivate:
+          type: boolean
+          description: Whether the location of the observation is private.
     Observation:
       type: object
       properties:
-        comName:
-          type: string
-        sciName:
-          type: string
-        locId:
-          type: string
-        locName:
-          type: string
-        obsDt:
-          type: string
-        howMany:
-          type: integer
-        lat:
-          type: number
-        lng:
-          type: number
-        obsValid:
-          type: boolean
-        obsReviewed:
-          type: boolean
-        locationPrivate:
-          type: boolean
         speciesCode:
           type: string
+          description: A unique code assigned to the species observed.
+        comName:
+          type: string
+          description: Common name of the species observed.
+        sciName:
+          type: string
+          description: Scientific name of the species observed.
+        locId:
+          type: string
+          description: Unique identifier for the location of the observation.
+        locName:
+          type: string
+          description: Name of the location where the observation was made.
+        obsDt:
+          type: string
+          description: Date and time of the observation.
+        howMany:
+          type: integer
+          description: The number of individuals observed.
+        lat:
+          type: number
+          format: double
+          description: Latitude of the observation location.
+        lng:
+          type: number
+          format: double
+          description: Longitude of the observation location.
+        obsValid:
+          type: boolean
+          description: Whether the observation has been validated.
+        obsReviewed:
+          type: boolean
+          description: Whether the observation has been reviewed.
+        locationPrivate:
+          type: boolean
+          description: Whether the location of the observation is private.
+    Contributor:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Unique identifier for the contributor.
+        userName:
+          type: string
+          description: Name of the contributor.
+        userDisplayName:
+          type: string
+          description: Display name of the contributor.
+        observationCount:
+          type: integer
+          description: Number of observations contributed by the user on the specified date.
+    ObservationArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Observation'
     ErrorResponse:
       type: object
       properties:
         code:
           type: integer
-          format: int32
+          description: HTTP status code of the error.
         message:
           type: string
+          description: A descriptive message about the error.
+
+
+  responses:
+    ErrorResponse:
+      description: Error response indicating what went wrong during the API call.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
     HistoricObservationResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          speciesCode:
-            type: string
-          comName:
-            type: string
-          sciName:
-            type: string
-          locId:
-            type: string
-          locName:
-            type: string
-          obsDt:
-            type: string
-            format: date-time
-          howMany:
-            type: integer
-            format: int32
-          lat:
-            type: number
-            format: double
-          lng:
-            type: number
-            format: string
-          obsValid:
-            type: boolean
-          obsReviewed:
-            type: boolean
-          locationPrivate:
-            type: boolean
-          subId:
-            type: string
-          subnational1Code:
-            type: string
-          subnational1Name:
-            type: string
+      description: Detailed response for historic observations.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HistoricObservationResponse'
+
+    ObservationResponse:
+      description: Response for general observations data.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ObservationArray'
+
+    ContributorResponse:
+      description: Response containing data about contributors.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Contributor'
+  securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-eBirdApiToken
 security:
   - ApiKeyAuth: []
-
-
- 
