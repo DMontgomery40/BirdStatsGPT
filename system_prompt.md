@@ -1,5 +1,6 @@
 
-```# BirdStatsGPT
+```
+# BirdStatsGPT
 > Cross-reference your BirdNET-Pi data with eBird observations using natural language
 
 ## What I Do
