@@ -1,19 +1,99 @@
+
 # BirdStatsGPT
+
 **https://chat.openai.com/g/g-G8R6D6ufP-birdstats-gpt**
 
 ## Introduction
-BirdStatsGPT is a custom GPT with the eBird and BirdWeather APIs, aimed at enhancing the interpretation of BirdNET / Birdweather and eBird data. You can cross reference the two databases with natural language. 
 
-## BirdNET-Pi / Birdweather API ** Using your station token
-As of this writing, a person can just put their station token into the query. I'm not quite sure why that works, as I've marked it as "Bearer", and a key that needs to be passed through the header. But, it's letting me just put tokens in for all three of my stations through the query, which is great since I'm not sure how to set it up so that anyone can use it. 
+Hey there! Love birds? Running a BirdNET-Pi station? This GPT is your new birding buddy. 
 
-It's a feature and a bug. 
+BirdStatsGPT can help you make sense of all your bird data by connecting your BirdNET-Pi/BirdWeather detections with eBird's massive database. Just chat with it naturally - no need to deal with APIs or complex queries.
 
-## eBird 
-### Token
-This is set to my token, and is secure. 
-### Endpoints
-Right now there are 10 endpoints, so, since it's the eBird API, only a few hundered left to add :)
+Ask things like:
+- "My BirdNET heard a Swainson's Thrush this morning - is that unusual for my area?"
+- "What's the rarest bird my station detected this week?"
+- "Are the American Goldfinches my station keeps hearing also being reported on eBird?"
+- "Cross-reference my station's detections with historical eBird data for my county"
 
+It does all the heavy lifting of querying APIs and analyzing the data. You just need your BirdNET-Pi station token to get started!
+
+[Technical API documentation below for the curious, but you don't need any of this to use me - just chat naturally!]
+
+## API Documentation
+
+### BirdWeather API Endpoints
+
+#### Station Stats
+    GET /api/v1/stations/{token}/stats
+
+*Parameters:*
+- `period` (optional): day/week/month/all (default: day) 
+- `since` (optional): ISO8601 timestamp
+
+#### Station Species
+    GET /api/v1/stations/{token}/species
+
+*Parameters:*
+- `period` (optional): day/week/month/all (default: day)
+- `since` (optional): ISO8601 timestamp
+- `limit` (optional): max 100
+- `page` (optional): page number
+- `sort` (optional): common_name/scientific_name/top
+- `order` (optional): asc/desc
+- `speciesId` (optional): filter by species ID
+- `query` (optional): search query
+- `locale` (optional): language locale
+
+#### Detections
+    POST /api/v1/stations/detections
+    GET /api/v1/stations/{token}/detections
+    GET /api/v1/stations/{token}/detections/{id}
+
+#### Soundscapes
+    POST /api/v1/stations/{token}/soundscapes
+    GET /api/v1/stations/{token}/soundscapes
+    GET /api/v1/stations/{token}/soundscapes/{id}
+
+#### Species Information
+    GET /api/v1/species/{id}
+    POST /api/v1/species/lookup
+
+#### Station Configuration
+    POST /api/v1/stations/{token}/config
+
+### eBird API Endpoints
+
+#### Observations
+    GET /data/obs/{region}/notable/historic/{yyyymmdd}
+    GET /data/obs/{region}/recent
+    GET /data/obs/{region}/recent/notable
+    GET /data/obs/{region}/recent/{speciesCode}
+    GET /data/obs/hotspot/{hotspotCode}/recent
+    GET /data/obs/location/{locationId}/recent
+    GET /data/obs/geo/recent
+
+#### Reference Data
+    GET /ref/region/list/{regionType}/{parentRegionCode}
+    GET /ref/region/info/{regionCode}
+    GET /ref/hotspot/info/{hotspotCode}
+    GET /ref/taxonomy/ebird
+    GET /ref/taxonomy/ebird/{speciesCode}
+    GET /product/spplist/{region}
+
+#### Checklists
+    GET /product/checklist/view/{subId}
+    GET /product/checklist/feed/{region}
+    GET /data/obs/{region}/historic/{yyyymmdd}
+
+#### Statistics
+    GET /ref/region/stats/{regionCode}
+
+## Authentication
+
+### BirdNET-Pi / Birdweather API
+Currently, you can include your station token directly in the query parameter. While this works, it's worth noting this might be adjusted in future updates for better security practices.
+
+### eBird API
+Public research token, no need to anything on your end. The token is securely stored within the system.
 
 
