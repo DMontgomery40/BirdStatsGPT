@@ -1,0 +1,795 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "eBird API",
+    "version": "1.0.0",
+    "description": "eBird API with a maximum of 30 operations, including authentication, with all parameters inlined."
+  },
+  "servers": [
+    {
+      "url": "https://api.ebird.org/v2"
+    }
+  ],
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/data/obs/{region}/recent": {
+      "get": {
+        "operationId": "getRecentObservationsInRegion",
+        "summary": "Recent observations in a region",
+        "parameters": [
+          {
+            "name": "region",
+            "in": "path",
+            "required": true,
+            "description": "Region code (e.g. US-CO)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent observations",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/{region}/recent/notable": {
+      "get": {
+        "operationId": "getNotableRecentObservationsInRegion",
+        "summary": "Notable recent observations in a region",
+        "parameters": [
+          {
+            "name": "region",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notable recent observations",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/{region}/recent/{speciesCode}": {
+      "get": {
+        "operationId": "getRecentSpeciesObservationsInRegion",
+        "summary": "Recent observations of a species in a region",
+        "parameters": [
+          {
+            "name": "region",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "speciesCode",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent observations of the species",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/hotspot/{hotspotCode}/recent": {
+      "get": {
+        "operationId": "getRecentObservationsAtHotspot",
+        "summary": "Recent observations at a hotspot",
+        "parameters": [
+          {
+            "name": "hotspotCode",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent observations at the hotspot",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/hotspot/{hotspotCode}/recent/notable": {
+      "get": {
+        "operationId": "getNotableRecentObservationsAtHotspot",
+        "summary": "Notable recent observations at a hotspot",
+        "parameters": [
+          {
+            "name": "hotspotCode",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notable recent observations",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/hotspot/{hotspotCode}/recent/{speciesCode}": {
+      "get": {
+        "operationId": "getRecentSpeciesObservationsAtHotspot",
+        "summary": "Recent observations of a species at a hotspot",
+        "parameters": [
+          {
+            "name": "hotspotCode",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "speciesCode",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent species observations",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/location/{locationId}/recent": {
+      "get": {
+        "operationId": "getRecentObservationsAtLocation",
+        "summary": "Recent observations at a location",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent observations at the location",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/location/{locationId}/recent/notable": {
+      "get": {
+        "operationId": "getNotableRecentObservationsAtLocation",
+        "summary": "Notable recent observations at a location",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notable recent observations",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/location/{locationId}/recent/{speciesCode}": {
+      "get": {
+        "operationId": "getRecentSpeciesObservationsAtLocation",
+        "summary": "Recent species observations at a location",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "speciesCode",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent species observations",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/geo/recent": {
+      "get": {
+        "operationId": "getRecentObservationsByGeo",
+        "summary": "Recent observations by geo-coordinates",
+        "parameters": [
+          { "name": "lat", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "lng", "in": "query", "required": true, "schema": { "type": "number" } },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent observations by coordinates",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/geo/recent/notable": {
+      "get": {
+        "operationId": "getNotableRecentObservationsByGeo",
+        "summary": "Notable recent observations by coordinates",
+        "parameters": [
+          { "name": "lat", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "lng", "in": "query", "required": true, "schema": { "type": "number" } },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notable observations by coordinates",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/geo/recent/{speciesCode}": {
+      "get": {
+        "operationId": "getRecentSpeciesObservationsByGeo",
+        "summary": "Recent species observations by coordinates",
+        "parameters": [
+          { "name": "lat", "in": "query", "required": true, "schema": { "type": "number" } },
+          { "name": "lng", "in": "query", "required": true, "schema": { "type": "number" } },
+          {
+            "name": "speciesCode",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent species observations",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+
+    "/ref/region/list/{regionType}/{parentRegionCode}": {
+      "get": {
+        "operationId": "listSubRegions",
+        "summary": "List sub-regions of a parent region",
+        "parameters": [
+          { "name": "regionType", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "parentRegionCode", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of sub-regions",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Region" } }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/ref/region/info/{regionCode}": {
+      "get": {
+        "operationId": "getRegionInfo",
+        "summary": "Get region info",
+        "parameters": [
+          { "name": "regionCode", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Region info",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Region" } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/ref/hotspot/info/{hotspotCode}": {
+      "get": {
+        "operationId": "getHotspotInfo",
+        "summary": "Get hotspot info",
+        "parameters": [
+          { "name": "hotspotCode", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hotspot info",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Hotspot" } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/ref/hotspot/list/{regionCode}": {
+      "get": {
+        "operationId": "listHotspotsInRegion",
+        "summary": "List hotspots for a region",
+        "parameters": [
+          { "name": "regionCode", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of hotspots",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Hotspot" } } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/ref/taxonomy/ebird": {
+      "get": {
+        "operationId": "getEbirdTaxonomy",
+        "summary": "Get eBird taxonomy",
+        "responses": {
+          "200": {
+            "description": "eBird taxonomy",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Species" } } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/ref/taxonomy/ebird/{speciesCode}": {
+      "get": {
+        "operationId": "getSpeciesInfo",
+        "summary": "Get single species info",
+        "parameters": [
+          { "name": "speciesCode", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Species info",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Species" } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+
+    "/product/spplist/{region}": {
+      "get": {
+        "operationId": "listSpeciesInRegion",
+        "summary": "List species reported in a region",
+        "parameters": [
+          { "name": "region", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Species in region",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Species" } } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/product/checklist/view/{subId}": {
+      "get": {
+        "operationId": "viewChecklist",
+        "summary": "View a checklist",
+        "parameters": [
+          { "name": "subId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Checklist details",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Checklist" } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/product/checklist/feed/{region}": {
+      "get": {
+        "operationId": "getRecentChecklistsInRegion",
+        "summary": "Feed of recent checklists in a region",
+        "parameters": [
+          { "name": "region", "in": "path", "required": true, "schema": { "type": "string" } },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent checklists",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Checklist" } } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+
+    "/data/obs/{region}/historic/{yyyymmdd}": {
+      "get": {
+        "operationId": "getHistoricObservationsInRegion",
+        "summary": "Historic observations in a region",
+        "parameters": [
+          { "name": "region", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "yyyymmdd", "in": "path", "required": true, "schema": { "type": "string", "pattern": "^[0-9]{8}$" } },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historic observations",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/{region}/notable/historic/{yyyymmdd}": {
+      "get": {
+        "operationId": "getHistoricNotableObservationsInRegion",
+        "summary": "Historic notable observations in a region",
+        "parameters": [
+          { "name": "region", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "yyyymmdd", "in": "path", "required": true, "schema": { "type": "string", "pattern": "^[0-9]{8}$" } },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historic notable observations",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/hotspot/{hotspotCode}/historic/{yyyymmdd}": {
+      "get": {
+        "operationId": "getHistoricObservationsAtHotspot",
+        "summary": "Historic observations at a hotspot",
+        "parameters": [
+          { "name": "hotspotCode", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "yyyymmdd", "in": "path", "required": true, "schema": { "type": "string", "pattern": "^[0-9]{8}$" } },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historic observations at the hotspot",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/data/obs/hotspot/{hotspotCode}/notable/historic/{yyyymmdd}": {
+      "get": {
+        "operationId": "getHistoricNotableObservationsAtHotspot",
+        "summary": "Historic notable observations at a hotspot",
+        "parameters": [
+          { "name": "hotspotCode", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "yyyymmdd", "in": "path", "required": true, "schema": { "type": "string", "pattern": "^[0-9]{8}$" } },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historic notable observations",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Observation" } } }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    },
+    "/ref/region/stats/{regionCode}": {
+      "get": {
+        "operationId": "getRegionStats",
+        "summary": "Get region stats",
+        "parameters": [
+          { "name": "regionCode", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Region stats",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RegionStats" }
+              }
+            }
+          },
+          "default": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    }
+  },
+  "components": {
+    securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-eBirdApiToken"
+      }
+    },
+    "responses": {
+      "ErrorResponse": {
+        "description": "Error response",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Observation": {
+        "type": "object",
+        "properties": {
+          "speciesCode": { "type": "string" },
+          "comName": { "type": "string" },
+          "sciName": { "type": "string" },
+          "obsDt": { "type": "string" },
+          "howMany": { "type": "integer" },
+          "lat": { "type": "number" },
+          "lng": { "type": "number" },
+          "locName": { "type": "string" },
+          "locId": { "type": "string" }
+        },
+        "required": ["speciesCode","comName","obsDt"]
+      },
+      "Region": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "countryCode": { "type": "string" }
+        },
+        "required": ["code","name"]
+      },
+      "Hotspot": {
+        "type": "object",
+        "properties": {
+          "hotspotCode": { "type": "string" },
+          "locName": { "type": "string" },
+          "lat": { "type": "number" },
+          "lng": { "type": "number" }
+        },
+        "required": ["hotspotCode","locName"]
+      },
+      "Species": {
+        "type": "object",
+        "properties": {
+          "speciesCode": { "type": "string" },
+          "comName": { "type": "string" },
+          "sciName": { "type": "string" },
+          "taxonOrder": { "type": "number" }
+        },
+        "required": ["speciesCode","comName"]
+      },
+      "Checklist": {
+        "type": "object",
+        "properties": {
+          "subId": { "type": "string" },
+          "obsTime": { "type": "string" },
+          "location": { "type": "string" },
+          "observations": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Observation" }
+          }
+        },
+        "required": ["subId","observations"]
+      },
+      "RegionStats": {
+        "type": "object",
+        "properties": {
+          "regionCode": { "type": "string" },
+          "totalSpecies": { "type": "integer" },
+          "checklistCount": { "type": "integer" }
+        },
+        "required": ["regionCode","totalSpecies"]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer" },
+          "message": { "type": "string" }
+        },
+        "required": ["status","message"]
+      }
+    }
+  }
+}
