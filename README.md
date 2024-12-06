@@ -17,6 +17,14 @@ Ask things like:
 
 It does all the heavy lifting of querying APIs and analyzing the data. You just need your BirdNET-Pi station token to get started!
 
+## Authentication
+
+### BirdNET-Pi / Birdweather API
+Currently, you can include your station token directly in the query parameter. While this works, it's worth noting this might be adjusted in future updates for better security practices.
+
+### eBird API
+Public research token, no need to anything on your end. The token is securely stored within the system.
+
 [Technical API documentation below for the curious, but you don't need any of this to use me - just chat naturally!]
 
 ## API Documentation
@@ -88,12 +96,6 @@ It does all the heavy lifting of querying APIs and analyzing the data. You just 
 #### Statistics
     GET /ref/region/stats/{regionCode}
 
-## Authentication
 
-### BirdNET-Pi / Birdweather API
-Currently, you can include your station token directly in the query parameter. While this works, it's worth noting this might be adjusted in future updates for better security practices.
-
-### eBird API
-Public research token, no need to anything on your end. The token is securely stored within the system.
 
 
